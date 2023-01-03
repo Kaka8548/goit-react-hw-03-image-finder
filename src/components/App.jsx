@@ -5,7 +5,6 @@ import Searchbar from './searchbar/Searchbar';
 import { Component } from 'react';
 import { getImages } from 'utils';
 import Loader from './loader/Loader';
-import Modal from './modal/Modal';
 
 export class App extends Component {
   state = {
