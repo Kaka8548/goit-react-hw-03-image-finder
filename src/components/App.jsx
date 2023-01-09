@@ -3,7 +3,7 @@ import Button from './button/Button';
 import ImageGallery from './imageGallery/ImageGallery';
 import Searchbar from './searchbar/Searchbar';
 import { Component } from 'react';
-import { getImages } from 'utils';
+import { filterHIts, getImages } from 'utils';
 import Loader from './loader/Loader';
 
 export class App extends Component {
@@ -22,8 +22,10 @@ export class App extends Component {
       this.setState({ isLoading: true });
       try {
         const data = await getImages({ query, page });
+        const filteredHits = filterHIts(data.hits);
+
         this.setState(prevState => ({
-          images: [...prevState.images, ...data.hits],
+          images: [...prevState.images, ...filteredHits],
           totalImages: data.totalHits,
           error: '',
         }));
@@ -36,7 +38,12 @@ export class App extends Component {
   };
 
   handleSubmit = normilizedQuery => {
-    this.setState({ query: normilizedQuery, images: [], page: 1 });
+    this.setState({
+      query: normilizedQuery,
+      images: [],
+      page: 1,
+      totalImages: 0,
+    });
   };
 
   handleClick = () => {
@@ -45,8 +52,7 @@ export class App extends Component {
 
   render() {
     const { images, isLoading, totalImages, error } = this.state;
-    const isBtnShown =
-      totalImages !== images.length && !isLoading && totalImages > 0;
+    const isBtnShown = totalImages !== images.length && !isLoading;
 
     return (
       <Application>
